@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <title>Poker 分池計算器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: #f5f5f5;
+            min-height: 100vh;
+            -webkit-font-smoothing: antialiased;
+        }
+        
+        .header {
+            background: white;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            font-size: 18px;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo span {
+            background: #e74c3c;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            margin-left: 8px;
+            font-size: 16px;
+        }
+        
+        .container {
+            max-width: 100%;
+            padding: 12px;
+        }
+        
+        .section {
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+        
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 12px;
+        }
+        
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .info-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .add-player {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+        
+        .add-player input {
+            flex: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            -webkit-appearance: none;
+        }
+        
+        .btn {
+            padding: 12px 20px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s;
+            -webkit-appearance: none;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            background: #2980b9;
+            transform: scale(0.98);
+        }
+        
+        .player-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .player-table th {
+            text-align: left;
+            padding: 8px 4px;
+            color: #666;
+            font-weight: normal;
+            font-size: 13px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .player-table th:first-child {
+            padding-left: 0;
+        }
+        
+        .player-table th:last-child {
+            width: 30px;
+        }
+        
+        .player-table td {
+            padding: 10px 4px;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+        }
+        
+        .player-table td:first-child {
+            padding-left: 0;
+        }
+        
+        .player-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .player-name {
+            font-weight: 500;
+            font-size: 15px;
+        }
+        
+        .buy-control {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .buy-control span {
+            min-width: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .buy-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            font-size: 18px;
+            touch-action: manipulation;
+        }
+        
+        .buy-btn:active {
+            background: #f0f0f0;
+            transform: scale(0.95);
+        }
+        
+        .balance-input {
+            width: 70px;
+            padding: 8px 4px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 15px;
+            -webkit-appearance: none;
+        }
+        
+        .profit {
+            color: #27ae60;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .loss {
+            color: #e74c3c;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        /* 差額區塊樣式 */
+        .difference-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            display: block !important;
+            visibility: visible !important;
+        }
+        
+        .difference-row {
+            display: flex;
+            align-items: center;
+            padding: 12px 0;
+        }
+        
+        .difference-label {
+            font-size: 16px;
+            font-weight: 500;
+            color: #333;
+            margin-right: 15px;
+        }
+        
+        .difference-info {
+            flex: 1;
+            font-size: 13px;
+            color: #ff9999;
+            display: flex;
+            align-items: center;
+            padding: 6px 12px;
+            background: #fff5f5;
+            border-radius: 6px;
+            margin-right: 15px;
+        }
+        
+        .difference-value {
+            font-size: 20px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: right;
+        }
+        
+        .settlement-item {
+            padding: 14px 0;
+            border-bottom: 1px solid #f5f5f5;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .settlement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .settlement-text {
+            flex: 1;
+            font-size: 15px;
+        }
+        
+        .settlement-amount {
+            font-weight: bold;
+            color: #e74c3c;
+            font-size: 16px;
+        }
+        
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #e74c3c;
+            cursor: pointer;
+            padding: 4px;
+            font-size: 22px;
+            touch-action: manipulation;
+        }
+        
+        .delete-btn:active {
+            transform: scale(0.9);
+        }
+        
+        .calculate-btn {
+            width: 100%;
+            padding: 16px;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 16px;
+            touch-action: manipulation;
+            position: sticky;
+            bottom: 12px;
+            box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+        }
+        
+        .calculate-btn:active {
+            background: #c0392b;
+            transform: scale(0.98);
+        }
+
+        input[type="number"] {
+            font-size: 16px;
+        }
+        
+        input, select, textarea {
+            font-size: 16px !important;
+        }
+        
+        #buyInAmount {
+            -webkit-appearance: none;
+        }
+        
+        @media (max-width: 480px) {
+            .difference-info {
+                font-size: 12px;
+                padding: 4px 8px;
+                margin-right: 10px;
+            }
+            
+            .difference-value {
+                font-size: 18px;
+                min-width: 50px;
+            }
+        }
+        
+        @media (max-width: 380px) {
+            .player-table th,
+            .player-table td {
+                padding: 8px 2px;
+            }
+            
+            .balance-input {
+                width: 60px;
+            }
+            
+            .buy-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 16px;
+            }
+            
+            .difference-info {
+                display: none;
+            }
+            
+            .difference-label {
+                font-size: 14px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">
+            POKER <span>分池帝</span>
+        </div>
+    </div>
+    
+    <div class="container">
+        <div class="section">
+            <div class="section-title">遊戲設定</div>
+            <div class="info-row">
+                <span>買入額度：</span>
+                <input type="number" id="buyInAmount" value="1000" style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; text-align: center;">
+            </div>
+        </div>
+        
+        <div class="section">
+            <div class="section-title">新增玩家</div>
+            <div class="add-player">
+                <input type="text" id="playerName" placeholder="輸入玩家名稱">
+                <button class="btn" onclick="addPlayer()">新增</button>
+            </div>
+            
+            <table class="player-table">
+                <thead>
+                    <tr>
+                        <th>玩家</th>
+                        <th>買入</th>
+                        <th>餘額</th>
+                        <th>盈虧</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody id="playerList">
+                </tbody>
+            </table>
+            
+            <!-- 差額區塊 -->
+            <div class="difference-section">
+                <div class="difference-row">
+                    <span class="difference-label">差額</span>
+                    <span class="difference-info">⚠️ 計算分池需保持差額為零</span>
+                    <span id="totalDifference" class="difference-value">-6000</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section" id="settlementSection" style="display: none;">
+            <div class="section-title">💰 結算明細</div>
+            <div id="settlementList"></div>
+        </div>
+        
+        <button class="calculate-btn" onclick="calculateSettlement()">分享戰績海報</button>
+    </div>
+    
+    <script>
+        let players = [];
+        let buyInAmount = 1000;
+        
+        // 預設6個玩家
+        const defaultPlayers = ['Player 1', 'Player 2', 'Player 3', 'Player 4', 'Player 5', 'Player 6'];
+        
+        // 初始化預設玩家
+        function initDefaultPlayers() {
+            defaultPlayers.forEach(name => {
+                players.push({
+                    name: name,
+                    buyIns: 1,
+                    balance: 0,
+                    profit: 0
+                });
+            });
+            updatePlayerList();
+        }
+        
+        document.getElementById('buyInAmount').addEventListener('change', function() {
+            buyInAmount = parseInt(this.value) || 1000;
+            updatePlayerList();
+        });
+        
+        function addPlayer() {
+            const nameInput = document.getElementById('playerName');
+            const name = nameInput.value.trim();
+            
+            if (!name) {
+                alert('請輸入玩家名稱');
+                return;
+            }
+            
+            if (players.find(p => p.name === name)) {
+                alert('玩家已存在');
+                return;
+            }
+            
+            players.push({
+                name: name,
+                buyIns: 1,
+                balance: 0,
+                profit: 0
+            });
+            
+            nameInput.value = '';
+            updatePlayerList();
+        }
+        
+        function updatePlayerList() {
+            const tbody = document.getElementById('playerList');
+            tbody.innerHTML = '';
+            
+            let totalProfit = 0;
+            
+            players.forEach((player, index) => {
+                const row = document.createElement('tr');
+                
+                const totalBuyIn = player.buyIns * buyInAmount;
+                const profit = player.balance - totalBuyIn;
+                totalProfit += profit;
+                
+                row.innerHTML = `
+                    <td class="player-name">${player.name}</td>
+                    <td>
+                        <div class="buy-control">
+                            <button class="buy-btn" onclick="changeBuyIn(${index}, -1)">−</button>
+                            <span>+${player.buyIns}</span>
+                            <button class="buy-btn" onclick="changeBuyIn(${index}, 1)">+</button>
+                        </div>
+                    </td>
+                    <td>
+                        <input type="number" class="balance-input" value="${player.balance}" 
+                               onchange="updateBalance(${index}, this.value)">
+                    </td>
+                    <td class="${profit >= 0 ? 'profit' : 'loss'}">
+                        ${profit >= 0 ? '+' : ''}${profit}
+                    </td>
+                    <td>
+                        <button class="delete-btn" onclick="deletePlayer(${index})">×</button>
+                    </td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            // 更新差額顯示
+            const differenceElement = document.getElementById('totalDifference');
+            if (differenceElement) {
+                differenceElement.textContent = totalProfit === 0 ? '0' : (totalProfit > 0 ? `+${totalProfit}` : totalProfit);
+                
+                // 根據差額設定顏色
+                if (Math.abs(totalProfit) < 0.01) {
+                    differenceElement.style.color = '#333'; // 黑色 - 平衡
+                } else if (totalProfit > 0) {
+                    differenceElement.style.color = '#3498db'; // 藍色 - 正數
+                } else {
+                    differenceElement.style.color = '#e74c3c'; // 紅色 - 負數
+                }
+            }
+        }
+        
+        function changeBuyIn(index, change) {
+            if (players[index].buyIns + change >= 1) {
+                players[index].buyIns += change;
+                updatePlayerList();
+            }
+        }
+        
+        function updateBalance(index, value) {
+            players[index].balance = parseInt(value) || 0;
+            updatePlayerList();
+        }
+        
+        function deletePlayer(index) {
+            if (confirm(`確定要刪除 ${players[index].name} 嗎？`)) {
+                players.splice(index, 1);
+                updatePlayerList();
+            }
+        }
+        
+        function calculateSettlement() {
+            if (players.length < 2) {
+                alert('需要至少2名玩家才能計算');
+                return;
+            }
+            
+            // Calculate profits and losses
+            const results = players.map(player => {
+                const totalBuyIn = player.buyIns * buyInAmount;
+                const profit = player.balance - totalBuyIn;
+                return {
+                    name: player.name,
+                    profit: profit
+                };
+            });
+            
+            // Check if sum is zero
+            const totalSum = results.reduce((sum, r) => sum + r.profit, 0);
+            if (Math.abs(totalSum) > 0.01) {
+                alert(`盈虧總和不為零！\n當前差額: ${totalSum}\n請調整玩家餘額使差額為零`);
+                return;
+            }
+            
+            // Separate winners and losers
+            const winners = results.filter(r => r.profit > 0).sort((a, b) => b.profit - a.profit);
+            const losers = results.filter(r => r.profit < 0).sort((a, b) => a.profit - b.profit);
+            
+            // Calculate settlements
+            const settlements = [];
+            
+            for (let loser of losers) {
+                let debt = Math.abs(loser.profit);
+                
+                for (let winner of winners) {
+                    if (debt <= 0.01 || winner.profit <= 0.01) continue;
+                    
+                    const payment = Math.min(debt, winner.profit);
+                    settlements.push({
+                        from: loser.name,
+                        to: winner.name,
+                        amount: Math.round(payment)
+                    });
+                    
+                    debt -= payment;
+                    winner.profit -= payment;
+                }
+            }
+            
+            // Display settlements
+            const settlementSection = document.getElementById('settlementSection');
+            const settlementList = document.getElementById('settlementList');
+            
+            if (settlements.length > 0) {
+                settlementSection.style.display = 'block';
+                settlementList.innerHTML = settlements.map(s => `
+                    <div class="settlement-item">
+                        <div class="settlement-text">
+                            ${s.from} 付 ${s.to}
+                        </div>
+                        <div class="settlement-amount">
+                            ${s.amount}
+                        </div>
+                    </div>
+                `).join('');
+            } else {
+                settlementSection.style.display = 'none';
+            }
+        }
+        
+        // Allow Enter key to add player
+        document.getElementById('playerName').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addPlayer();
+            }
+        });
+        
+        // 頁面載入時初始化
+        window.addEventListener('DOMContentLoaded', function() {
+            initDefaultPlayers();
+        });
+    </script>
+</body>
+</html>
