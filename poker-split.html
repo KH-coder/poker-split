@@ -342,6 +342,38 @@
             -webkit-appearance: none;
         }
         
+        /* 分享彈窗按鈕樣式 */
+        .share-btn {
+            flex: 1;
+            padding: 14px;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .share-btn:active {
+            transform: scale(0.98);
+        }
+        
+        .download-btn {
+            background: #27ae60;
+        }
+        
+        .download-btn:active {
+            background: #229954;
+        }
+        
+        .copy-btn {
+            background: #3498db;
+        }
+        
+        .copy-btn:active {
+            background: #2980b9;
+        }
+        
         @media (max-width: 480px) {
             .difference-info {
                 font-size: 12px;
@@ -403,7 +435,13 @@
             <div class="section-title">遊戲設定</div>
             <div class="info-row">
                 <span>買入額度：</span>
-                <input type="number" id="buyInAmount" value="1000" style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; text-align: center;">
+                <input type="number" 
+                       id="buyInAmount" 
+                       value="1000" 
+                       pattern="[0-9]*"
+                       inputmode="numeric"
+                       onfocus="this.select()"
+                       style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; text-align: center;">
             </div>
         </div>
         
@@ -459,10 +497,10 @@
             </div>
             
             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button onclick="downloadPoster()" style="flex: 1; padding: 14px; background: #27ae60; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                <button onclick="downloadPoster()" class="share-btn download-btn">
                     📥 下載圖片
                 </button>
-                <button onclick="copyText()" style="flex: 1; padding: 14px; background: #3498db; color: white; border: none; border-radius: 8px; font-size: 16px; cursor: pointer;">
+                <button onclick="copyText()" class="share-btn copy-btn">
                     📋 複製文字
                 </button>
             </div>
@@ -490,11 +528,13 @@
             updatePlayerList();
         }
         
+        // 監聽買入額度變更
         document.getElementById('buyInAmount').addEventListener('change', function() {
             buyInAmount = parseInt(this.value) || 1000;
             updatePlayerList();
         });
         
+        // 新增玩家
         function addPlayer() {
             const nameInput = document.getElementById('playerName');
             const name = nameInput.value.trim();
@@ -517,9 +557,11 @@
             });
             
             nameInput.value = '';
+            nameInput.focus(); // 自動聚焦以便連續輸入
             updatePlayerList();
         }
         
+        // 更新玩家名稱
         function updatePlayerName(index, newName) {
             const trimmedName = newName.trim();
             
@@ -540,6 +582,7 @@
             players[index].name = trimmedName;
         }
         
+        // 更新玩家列表顯示
         function updatePlayerList() {
             const tbody = document.getElementById('playerList');
             tbody.innerHTML = '';
@@ -558,6 +601,7 @@
                         <input type="text" 
                                class="player-name-input" 
                                value="${player.name}" 
+                               onfocus="this.select()"
                                onchange="updatePlayerName(${index}, this.value)"
                                onblur="updatePlayerName(${index}, this.value)">
                     </td>
@@ -569,7 +613,13 @@
                         </div>
                     </td>
                     <td>
-                        <input type="number" class="balance-input" value="${player.balance}" 
+                        <input type="number" 
+                               class="balance-input" 
+                               value="${player.balance}" 
+                               pattern="[0-9]*"
+                               inputmode="numeric"
+                               onfocus="if(this.value == '0') this.value = ''; else this.select();"
+                               onblur="if(this.value == '') this.value = '0';"
                                onchange="updateBalance(${index}, this.value)">
                     </td>
                     <td class="${profit >= 0 ? 'profit' : 'loss'}">
@@ -599,6 +649,7 @@
             }
         }
         
+        // 更改買入次數
         function changeBuyIn(index, change) {
             if (players[index].buyIns + change >= 1) {
                 players[index].buyIns += change;
@@ -606,11 +657,13 @@
             }
         }
         
+        // 更新餘額
         function updateBalance(index, value) {
             players[index].balance = parseInt(value) || 0;
             updatePlayerList();
         }
         
+        // 刪除玩家
         function deletePlayer(index) {
             if (confirm(`確定要刪除 ${players[index].name} 嗎？`)) {
                 players.splice(index, 1);
@@ -618,13 +671,14 @@
             }
         }
         
+        // 計算結算
         function calculateSettlement() {
             if (players.length < 2) {
                 alert('需要至少2名玩家才能計算');
                 return;
             }
             
-            // Calculate profits and losses
+            // 計算盈虧
             const results = players.map(player => {
                 const totalBuyIn = player.buyIns * buyInAmount;
                 const profit = player.balance - totalBuyIn;
@@ -637,21 +691,21 @@
                 };
             });
             
-            // Check if sum is zero
+            // 檢查總和是否為零
             const totalSum = results.reduce((sum, r) => sum + r.profit, 0);
             if (Math.abs(totalSum) > 0.01) {
                 alert(`盈虧總和不為零！\n當前差額: ${totalSum}\n請調整玩家餘額使差額為零`);
                 return;
             }
             
-            // Sort results for display
+            // 按盈虧排序
             const sortedResults = [...results].sort((a, b) => b.profit - a.profit);
             
-            // Separate winners and losers for settlement calculation
+            // 分離贏家和輸家
             const winners = results.filter(r => r.profit > 0).sort((a, b) => b.profit - a.profit);
             const losers = results.filter(r => r.profit < 0).sort((a, b) => a.profit - b.profit);
             
-            // Calculate settlements
+            // 計算結算明細
             const settlements = [];
             const winnersCopy = winners.map(w => ({...w}));
             
@@ -673,7 +727,7 @@
                 }
             }
             
-            // Store game data for sharing
+            // 儲存遊戲數據
             lastGameData = {
                 date: new Date().toLocaleDateString('zh-HK'),
                 time: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }),
@@ -683,7 +737,7 @@
                 totalPot: results.reduce((sum, r) => sum + r.totalBuyIn, 0)
             };
             
-            // Display settlements
+            // 顯示結算明細
             const settlementSection = document.getElementById('settlementSection');
             const settlementList = document.getElementById('settlementList');
             
@@ -703,17 +757,18 @@
                 settlementSection.style.display = 'none';
             }
             
-            // Show share modal
+            // 顯示分享彈窗
             showShareModal();
         }
         
+        // 顯示分享彈窗
         function showShareModal() {
             if (!lastGameData) return;
             
             const modal = document.getElementById('shareModal');
             const content = document.getElementById('posterContent');
             
-            // Generate poster HTML
+            // 生成海報HTML
             const bigWinner = lastGameData.players[0];
             const bigLoser = lastGameData.players[lastGameData.players.length - 1];
             
@@ -794,36 +849,38 @@
             modal.style.display = 'block';
         }
         
+        // 關閉分享彈窗
         function closeShareModal() {
             document.getElementById('shareModal').style.display = 'none';
         }
         
+        // 下載海報圖片
         function downloadPoster() {
             const canvas = document.getElementById('posterCanvas');
             const ctx = canvas.getContext('2d');
             
-            // Calculate dynamic height based on content
+            // 計算動態高度
             const baseHeight = 350;
             const playerHeight = lastGameData.players.length * 25;
             const settlementHeight = lastGameData.settlements.length > 0 ? (lastGameData.settlements.length * 20 + 50) : 0;
             const totalHeight = baseHeight + playerHeight + settlementHeight + 50;
             
-            // Set canvas size
+            // 設置畫布大小
             canvas.width = 400;
             canvas.height = totalHeight;
             
-            // Clear canvas
+            // 清空畫布
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // Draw gradient header
+            // 繪製漸層標題背景
             const gradient = ctx.createLinearGradient(0, 0, canvas.width, 120);
             gradient.addColorStop(0, '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, 120);
             
-            // Draw title
+            // 繪製標題
             ctx.fillStyle = 'white';
             ctx.font = 'bold 28px sans-serif';
             ctx.textAlign = 'center';
@@ -831,13 +888,13 @@
             ctx.font = '16px sans-serif';
             ctx.fillText(`${lastGameData.date} ${lastGameData.time}`, canvas.width / 2, 85);
             
-            // Draw stats boxes
+            // 繪製統計數據框
             ctx.fillStyle = '#f8f9fa';
             ctx.fillRect(20, 140, 110, 70);
             ctx.fillRect(145, 140, 110, 70);
             ctx.fillRect(270, 140, 110, 70);
             
-            // Draw stats text
+            // 繪製統計文字
             ctx.fillStyle = '#666';
             ctx.font = '12px sans-serif';
             ctx.textAlign = 'center';
@@ -851,7 +908,7 @@
             ctx.fillText(`$${lastGameData.buyInAmount}`, 200, 190);
             ctx.fillText(`${lastGameData.players.length}`, 325, 190);
             
-            // Draw winner/loser highlight
+            // 繪製贏家/輸家亮點
             const bigWinner = lastGameData.players[0];
             const bigLoser = lastGameData.players[lastGameData.players.length - 1];
             
@@ -875,29 +932,29 @@
             ctx.fillText(bigLoser.name, 220, 270);
             ctx.fillText(`-$${Math.abs(bigLoser.profit)}`, 220, 285);
             
-            // Draw rankings
+            // 繪製排行榜
             ctx.fillStyle = '#333';
             ctx.font = 'bold 14px sans-serif';
             ctx.fillText('📊 戰績排行', 30, 320);
             
             let y = 345;
             lastGameData.players.forEach((player, index) => {
-                // Rank number
+                // 排名數字
                 ctx.font = 'bold 14px sans-serif';
                 ctx.fillStyle = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#999';
                 ctx.fillText(`${index + 1}.`, 30, y);
                 
-                // Player name
+                // 玩家名字
                 ctx.fillStyle = '#333';
                 ctx.font = '14px sans-serif';
                 ctx.fillText(player.name, 55, y);
                 
-                // Buy-ins
+                // 買入次數
                 ctx.fillStyle = '#999';
                 ctx.font = '12px sans-serif';
                 ctx.fillText(`買${player.buyIns}次`, 200, y);
                 
-                // Profit/loss
+                // 盈虧
                 ctx.font = 'bold 14px sans-serif';
                 ctx.fillStyle = player.profit >= 0 ? '#27ae60' : '#e74c3c';
                 ctx.textAlign = 'right';
@@ -907,7 +964,7 @@
                 y += 25;
             });
             
-            // Draw settlements if any
+            // 繪製結算明細（如果有）
             if (lastGameData.settlements.length > 0) {
                 y += 10;
                 const settlementBoxHeight = lastGameData.settlements.length * 20 + 30;
@@ -927,13 +984,13 @@
                 y += 10;
             }
             
-            // Footer
+            // 頁腳
             ctx.fillStyle = '#999';
             ctx.font = '11px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Powered by POKER 分池師', canvas.width / 2, canvas.height - 20);
             
-            // Download the canvas as image
+            // 下載圖片
             canvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -944,6 +1001,7 @@
             });
         }
         
+        // 複製文字到剪貼簿
         function copyText() {
             if (!lastGameData) return;
             
@@ -972,7 +1030,7 @@
             text += `\n━━━━━━━━━━━━━━━\n`;
             text += `Powered by POKER 分池師`;
             
-            // Copy to clipboard
+            // 複製到剪貼簿
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
                     alert('戰績已複製到剪貼簿！');
@@ -984,6 +1042,7 @@
             }
         }
         
+        // 備用複製方法
         function fallbackCopy(text) {
             const textarea = document.createElement('textarea');
             textarea.value = text;
@@ -996,14 +1055,14 @@
             alert('戰績已複製到剪貼簿！');
         }
         
-        // Allow Enter key to add player
+        // Enter鍵新增玩家
         document.getElementById('playerName').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 addPlayer();
             }
         });
         
-        // Close modal when clicking outside
+        // 點擊彈窗外部關閉
         document.getElementById('shareModal').addEventListener('click', function(e) {
             if (e.target === this) {
                 closeShareModal();
