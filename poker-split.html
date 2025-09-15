@@ -1027,135 +1027,191 @@
             document.getElementById('shareModal').style.display = 'none';
         }
         
-        // 下載海報圖片
+        // 下載圖片（備用函數）
         function downloadPoster() {
+            shareToWhatsApp();
+        }
+        
+        // 分享到 WhatsApp
+        async function shareToWhatsApp() {
             const canvas = document.getElementById('posterCanvas');
             const ctx = canvas.getContext('2d');
             
-            const baseHeight = 350;
-            const playerHeight = lastGameData.players.length * 25;
-            const settlementHeight = lastGameData.settlements.length > 0 ? (lastGameData.settlements.length * 20 + 50) : 0;
-            const totalHeight = baseHeight + playerHeight + settlementHeight + 50;
+            // 使用更高解析度以確保圖片清晰（2倍大小）
+            const scale = 2;
+            const baseWidth = 400 * scale;
+            const baseHeight = 350 * scale;
+            const playerHeight = lastGameData.players.length * 25 * scale;
+            const settlementHeight = lastGameData.settlements.length > 0 ? (lastGameData.settlements.length * 20 + 50) * scale : 0;
+            const totalHeight = baseHeight + playerHeight + settlementHeight + 50 * scale;
             
-            canvas.width = 400;
+            canvas.width = baseWidth;
             canvas.height = totalHeight;
             
+            // 設置高質量渲染
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            
+            // 背景
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 120);
+            // 頂部漸變背景
+            const gradient = ctx.createLinearGradient(0, 0, canvas.width, 120 * scale);
             gradient.addColorStop(0, '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
-            ctx.fillRect(0, 0, canvas.width, 120);
+            ctx.fillRect(0, 0, canvas.width, 120 * scale);
             
+            // 標題
             ctx.fillStyle = 'white';
-            ctx.font = 'bold 28px sans-serif';
+            ctx.font = `bold ${28 * scale}px sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText('🎰 POKER 戰績', canvas.width / 2, 50);
-            ctx.font = '16px sans-serif';
-            ctx.fillText(`${lastGameData.date} ${lastGameData.time}`, canvas.width / 2, 85);
+            ctx.fillText('🎰 POKER 戰績', canvas.width / 2, 50 * scale);
+            ctx.font = `${16 * scale}px sans-serif`;
+            ctx.fillText(`${lastGameData.date} ${lastGameData.time}`, canvas.width / 2, 85 * scale);
             
+            // 統計框
             ctx.fillStyle = '#f8f9fa';
-            ctx.fillRect(20, 140, 110, 70);
-            ctx.fillRect(145, 140, 110, 70);
-            ctx.fillRect(270, 140, 110, 70);
+            ctx.fillRect(20 * scale, 140 * scale, 110 * scale, 70 * scale);
+            ctx.fillRect(145 * scale, 140 * scale, 110 * scale, 70 * scale);
+            ctx.fillRect(270 * scale, 140 * scale, 110 * scale, 70 * scale);
             
             ctx.fillStyle = '#666';
-            ctx.font = '12px sans-serif';
+            ctx.font = `${12 * scale}px sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText('總彩池', 75, 160);
-            ctx.fillText('買入額', 200, 160);
-            ctx.fillText('玩家數', 325, 160);
+            ctx.fillText('總彩池', 75 * scale, 160 * scale);
+            ctx.fillText('買入額', 200 * scale, 160 * scale);
+            ctx.fillText('玩家數', 325 * scale, 160 * scale);
             
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 20px sans-serif';
-            ctx.fillText(`$${lastGameData.totalPot}`, 75, 190);
-            ctx.fillText(`$${lastGameData.buyInAmount}`, 200, 190);
-            ctx.fillText(`${lastGameData.players.length}`, 325, 190);
+            ctx.font = `bold ${20 * scale}px sans-serif`;
+            ctx.fillText(`${lastGameData.totalPot}`, 75 * scale, 190 * scale);
+            ctx.fillText(`${lastGameData.buyInAmount}`, 200 * scale, 190 * scale);
+            ctx.fillText(`${lastGameData.players.length}`, 325 * scale, 190 * scale);
             
+            // 大贏家和輸家
             const bigWinner = lastGameData.players[0];
             const bigLoser = lastGameData.players[lastGameData.players.length - 1];
             
             ctx.fillStyle = '#e8f5e9';
-            ctx.fillRect(20, 230, 170, 60);
+            ctx.fillRect(20 * scale, 230 * scale, 170 * scale, 60 * scale);
             ctx.fillStyle = '#ffebee';
-            ctx.fillRect(210, 230, 170, 60);
+            ctx.fillRect(210 * scale, 230 * scale, 170 * scale, 60 * scale);
             
             ctx.textAlign = 'left';
             ctx.fillStyle = '#666';
-            ctx.font = '12px sans-serif';
-            ctx.fillText('🏆 大贏家', 30, 250);
-            ctx.fillText('💸 最慘烈', 220, 250);
+            ctx.font = `${12 * scale}px sans-serif`;
+            ctx.fillText('🏆 大贏家', 30 * scale, 250 * scale);
+            ctx.fillText('💸 最慘烈', 220 * scale, 250 * scale);
             
             ctx.fillStyle = '#27ae60';
-            ctx.font = 'bold 16px sans-serif';
-            ctx.fillText(bigWinner.name, 30, 270);
-            ctx.fillText(`+$${bigWinner.profit}`, 30, 285);
+            ctx.font = `bold ${16 * scale}px sans-serif`;
+            ctx.fillText(bigWinner.name, 30 * scale, 270 * scale);
+            ctx.fillText(`+${bigWinner.profit}`, 30 * scale, 285 * scale);
             
             ctx.fillStyle = '#e74c3c';
-            ctx.fillText(bigLoser.name, 220, 270);
-            ctx.fillText(`-$${Math.abs(bigLoser.profit)}`, 220, 285);
+            ctx.fillText(bigLoser.name, 220 * scale, 270 * scale);
+            ctx.fillText(`-${Math.abs(bigLoser.profit)}`, 220 * scale, 285 * scale);
             
+            // 戰績排行
             ctx.fillStyle = '#333';
-            ctx.font = 'bold 14px sans-serif';
-            ctx.fillText('📊 戰績排行', 30, 320);
+            ctx.font = `bold ${14 * scale}px sans-serif`;
+            ctx.fillText('📊 戰績排行', 30 * scale, 320 * scale);
             
-            let y = 345;
+            let y = 345 * scale;
             lastGameData.players.forEach((player, index) => {
-                ctx.font = 'bold 14px sans-serif';
+                ctx.font = `bold ${14 * scale}px sans-serif`;
                 ctx.fillStyle = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#999';
-                ctx.fillText(`${index + 1}.`, 30, y);
+                ctx.fillText(`${index + 1}.`, 30 * scale, y);
                 
                 ctx.fillStyle = '#333';
-                ctx.font = '14px sans-serif';
-                ctx.fillText(player.name, 55, y);
+                ctx.font = `${14 * scale}px sans-serif`;
+                ctx.fillText(player.name, 55 * scale, y);
                 
                 ctx.fillStyle = '#999';
-                ctx.font = '12px sans-serif';
-                ctx.fillText(`買${player.buyIns}次`, 200, y);
+                ctx.font = `${12 * scale}px sans-serif`;
+                ctx.fillText(`買${player.buyIns}次`, 200 * scale, y);
                 
-                ctx.font = 'bold 14px sans-serif';
+                ctx.font = `bold ${14 * scale}px sans-serif`;
                 ctx.fillStyle = player.profit >= 0 ? '#27ae60' : '#e74c3c';
                 ctx.textAlign = 'right';
-                ctx.fillText(`${player.profit >= 0 ? '+' : ''}$${Math.abs(player.profit)}`, 370, y);
+                ctx.fillText(`${player.profit >= 0 ? '+' : ''}${Math.abs(player.profit)}`, 370 * scale, y);
                 ctx.textAlign = 'left';
                 
-                y += 25;
+                y += 25 * scale;
             });
             
+            // 結算明細
             if (lastGameData.settlements.length > 0) {
-                y += 10;
-                const settlementBoxHeight = lastGameData.settlements.length * 20 + 30;
+                y += 10 * scale;
+                const settlementBoxHeight = (lastGameData.settlements.length * 20 + 30) * scale;
                 ctx.fillStyle = '#fff3cd';
-                ctx.fillRect(20, y - 20, 360, settlementBoxHeight);
+                ctx.fillRect(20 * scale, y - 20 * scale, 360 * scale, settlementBoxHeight);
                 
                 ctx.fillStyle = '#856404';
-                ctx.font = 'bold 12px sans-serif';
-                ctx.fillText('💰 結算明細', 30, y);
-                y += 20;
+                ctx.font = `bold ${12 * scale}px sans-serif`;
+                ctx.fillText('💰 結算明細', 30 * scale, y);
+                y += 20 * scale;
                 
-                ctx.font = '12px sans-serif';
+                ctx.font = `${12 * scale}px sans-serif`;
                 lastGameData.settlements.forEach(s => {
-                    ctx.fillText(`${s.from} → ${s.to}: $${s.amount}`, 30, y);
-                    y += 18;
+                    ctx.fillText(`${s.from} → ${s.to}: ${s.amount}`, 30 * scale, y);
+                    y += 18 * scale;
                 });
-                y += 10;
+                y += 10 * scale;
             }
             
+            // 底部標記
             ctx.fillStyle = '#999';
-            ctx.font = '11px sans-serif';
+            ctx.font = `${11 * scale}px sans-serif`;
             ctx.textAlign = 'center';
-            ctx.fillText('Powered by POKER 分池師', canvas.width / 2, canvas.height - 20);
+            ctx.fillText('Powered by POKER 分池師', canvas.width / 2, canvas.height - 20 * scale);
             
-            canvas.toBlob(function(blob) {
-                const url = URL.createObjectURL(blob);
-                const link = document.createElement('a');
-                link.download = `poker_戰績_${lastGameData.date.replace(/\//g, '-')}_${lastGameData.time.replace(/:/g, '-')}.png`;
-                link.href = url;
-                link.click();
-                URL.revokeObjectURL(url);
-            });
+            // 將 canvas 轉換為 blob
+            canvas.toBlob(async function(blob) {
+                try {
+                    // 檢查是否支援 Web Share API
+                    if (navigator.share && navigator.canShare) {
+                        const file = new File([blob], `poker_戰績_${lastGameData.date.replace(/\//g, '-')}.png`, { type: 'image/png' });
+                        
+                        // 檢查是否可以分享文件
+                        if (navigator.canShare({ files: [file] })) {
+                            await navigator.share({
+                                files: [file],
+                                title: 'POKER 戰績',
+                                text: `🎰 POKER 戰績\n${lastGameData.date} ${lastGameData.time}\n總彩池: ${lastGameData.totalPot}`
+                            });
+                            return;
+                        }
+                    }
+                    
+                    // 如果不支援 Web Share API，使用備用方案
+                    // 先下載圖片，然後提示用戶手動分享
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = `poker_戰績_${lastGameData.date.replace(/\//g, '-')}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    setTimeout(() => {
+                        alert('圖片已下載！\n請在相簿中找到圖片，然後分享到 WhatsApp');
+                    }, 500);
+                    
+                } catch (error) {
+                    console.error('分享失敗:', error);
+                    // 如果分享失敗，直接下載
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.download = `poker_戰績_${lastGameData.date.replace(/\//g, '-')}.png`;
+                    link.href = url;
+                    link.click();
+                    URL.revokeObjectURL(url);
+                    
+                    alert('請在下載資料夾找到圖片，然後手動分享到 WhatsApp');
+                }
+            }, 'image/png', 0.95); // 使用高質量設定
         }
         
         // 複製文字到剪貼簿
