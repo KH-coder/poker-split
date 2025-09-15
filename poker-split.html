@@ -13,14 +13,12 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="description" content="Poker 分池計算器 - 自動計算撲克遊戲結算">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBva2VyIOWIhuaxoOioiOeulOWZqCIsCiAgInNob3J0X25hbWUiOiAiUG9rZXLliIbmsaAiLAogICJkZXNjcmlwdGlvbiI6ICLoh6rli5XoqIjnrpfmkrLlhYvpgYrmiLLntZDnrpciLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y1ZjVmNSIsCiAgInRoZW1lX2NvbG9yIjogIiNlNzRjM2MiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTkyIDE5MiclM0UlM0NyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyBmaWxsPSclMjNlNzRjM2MnIHJ4PScyMCcvJTNFJTNDdGV4dCB4PSc1MCUyNScgeT0nNTAlMjUnIGZvbnQtc2l6ZT0nODAnIGZpbGw9J3doaXRlJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nbWlkZGxlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZiclM0UlRjAlOUYlOEUlQjAlM0MvdGV4dCUzRSUzQy9zdmclM0UiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMiclM0UlM0NyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyBmaWxsPSclMjNlNzRjM2MnIHJ4PSc1MCcvJTNFJTNDdGV4dCB4PSc1MCUyNScgeT0nNTAlMjUnIGZvbnQtc2l6ZT0nMjAwJyBmaWxsPSd3aGl0ZScgdGV4dC1hbmNob3I9J21pZGRsZScgZG9taW5hbnQtYmFzZWxpbmU9J21pZGRsZScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnJTNFJUYwJTlGJThFJUIwJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    <!-- 動態生成 PNG icon -->
+    <link rel="icon" id="favicon" type="image/png">
+    <link rel="apple-touch-icon" id="apple-icon">
     
-    <!-- iOS Icon -->
-    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23e74c3c' rx='20'/%3E%3Ctext x='50%25' y='50%25' font-size='80' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif'%3E🎰%3C/text%3E%3C/svg%3E">
-    
-    <!-- Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e74c3c' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🎰%3C/text%3E%3C/svg%3E">
+    <!-- Manifest 將會動態生成 -->
+    <link rel="manifest" id="manifest-link">
     
     <title>Poker 分池計算器</title>
     <style>
@@ -485,6 +483,126 @@
             }
         }
     </style>
+    <script>
+        // 生成 PNG icon
+        function generatePNGIcon(size) {
+            const canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            const ctx = canvas.getContext('2d');
+            
+            // 背景
+            ctx.fillStyle = '#e74c3c';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 圓角
+            ctx.globalCompositeOperation = 'destination-in';
+            ctx.fillStyle = '#000';
+            ctx.beginPath();
+            const radius = size * 0.1;
+            ctx.moveTo(radius, 0);
+            ctx.lineTo(size - radius, 0);
+            ctx.quadraticCurveTo(size, 0, size, radius);
+            ctx.lineTo(size, size - radius);
+            ctx.quadraticCurveTo(size, size, size - radius, size);
+            ctx.lineTo(radius, size);
+            ctx.quadraticCurveTo(0, size, 0, size - radius);
+            ctx.lineTo(0, radius);
+            ctx.quadraticCurveTo(0, 0, radius, 0);
+            ctx.closePath();
+            ctx.fill();
+            
+            // 重設混合模式
+            ctx.globalCompositeOperation = 'source-over';
+            
+            // 文字
+            ctx.fillStyle = 'white';
+            ctx.font = `${size * 0.4}px sans-serif`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('🎰', size / 2, size / 2);
+            
+            return canvas.toDataURL('image/png');
+        }
+        
+        // 設置 icons 和 manifest
+        function setupPWAResources() {
+            // 生成不同尺寸的 PNG icons
+            const icon192 = generatePNGIcon(192);
+            const icon512 = generatePNGIcon(512);
+            const icon180 = generatePNGIcon(180);
+            const icon32 = generatePNGIcon(32);
+            
+            // 設置 favicon
+            document.getElementById('favicon').href = icon32;
+            
+            // 設置 Apple Touch Icon
+            document.getElementById('apple-icon').href = icon180;
+            
+            // 創建 manifest
+            const manifest = {
+                "name": "Poker 分池計算器",
+                "short_name": "Poker分池",
+                "description": "自動計算撲克遊戲結算",
+                "start_url": "./",
+                "scope": "./",
+                "display": "standalone",
+                "display_override": ["standalone", "minimal-ui"],
+                "background_color": "#ffffff",
+                "theme_color": "#e74c3c",
+                "orientation": "portrait",
+                "categories": ["games", "utilities"],
+                "lang": "zh-HK",
+                "dir": "ltr",
+                "prefer_related_applications": false,
+                "icons": [
+                    {
+                        "src": icon192,
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "any"
+                    },
+                    {
+                        "src": icon192,
+                        "sizes": "192x192",
+                        "type": "image/png",
+                        "purpose": "maskable"
+                    },
+                    {
+                        "src": icon512,
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "any"
+                    },
+                    {
+                        "src": icon512,
+                        "sizes": "512x512",
+                        "type": "image/png",
+                        "purpose": "maskable"
+                    }
+                ],
+                "shortcuts": [
+                    {
+                        "name": "新遊戲",
+                        "short_name": "新遊戲",
+                        "description": "開始新的撲克遊戲",
+                        "url": "./",
+                        "icons": [{"src": icon192, "sizes": "192x192"}]
+                    }
+                ]
+            };
+            
+            // 創建 manifest blob URL
+            const manifestBlob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+            const manifestUrl = URL.createObjectURL(manifestBlob);
+            document.getElementById('manifest-link').href = manifestUrl;
+        }
+        
+        // 在頁面載入時設置 PWA 資源
+        document.addEventListener('DOMContentLoaded', function() {
+            setupPWAResources();
+        });
+    </script>
 </head>
 <body>
     <div class="main-wrapper">
@@ -1066,7 +1184,7 @@
                 });
             }
             
-            text += `\n━━━━━━━━━━━━━━━\n`;
+            text += `\n═══════════════\n`;
             text += `Powered by POKER 分池師`;
             
             if (navigator.clipboard) {
@@ -1119,29 +1237,59 @@
         function initPWA() {
             // 註冊 Service Worker
             if ('serviceWorker' in navigator) {
-                const swCode = `
-                    self.addEventListener('install', e => {
-                        e.waitUntil(
-                            caches.open('poker-v1').then(cache => {
-                                return cache.addAll(['/']);
-                            })
-                        );
-                    });
+                navigator.serviceWorker.register('sw.js').then(registration => {
+                    console.log('ServiceWorker registration successful');
+                }).catch(err => {
+                    // 如果沒有獨立的 sw.js 文件，創建內聯版本
+                    const swCode = `
+                        const CACHE_NAME = 'poker-v2';
+                        const urlsToCache = [
+                            './',
+                            './index.html'
+                        ];
+                        
+                        self.addEventListener('install', event => {
+                            event.waitUntil(
+                                caches.open(CACHE_NAME)
+                                    .then(cache => cache.addAll(urlsToCache))
+                            );
+                            self.skipWaiting();
+                        });
+                        
+                        self.addEventListener('activate', event => {
+                            event.waitUntil(
+                                caches.keys().then(cacheNames => {
+                                    return Promise.all(
+                                        cacheNames.map(cacheName => {
+                                            if (cacheName !== CACHE_NAME) {
+                                                return caches.delete(cacheName);
+                                            }
+                                        })
+                                    );
+                                })
+                            );
+                            self.clients.claim();
+                        });
+                        
+                        self.addEventListener('fetch', event => {
+                            event.respondWith(
+                                caches.match(event.request)
+                                    .then(response => {
+                                        if (response) {
+                                            return response;
+                                        }
+                                        return fetch(event.request);
+                                    })
+                            );
+                        });
+                    `;
                     
-                    self.addEventListener('fetch', e => {
-                        e.respondWith(
-                            caches.match(e.request).then(response => {
-                                return response || fetch(e.request);
-                            })
-                        );
+                    const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                    const swUrl = URL.createObjectURL(swBlob);
+                    
+                    navigator.serviceWorker.register(swUrl).catch(() => {
+                        console.log('Service Worker registration with blob failed');
                     });
-                `;
-                
-                const swBlob = new Blob([swCode], { type: 'application/javascript' });
-                const swUrl = URL.createObjectURL(swBlob);
-                
-                navigator.serviceWorker.register(swUrl).catch(() => {
-                    console.log('Service Worker registration failed');
                 });
             }
             
