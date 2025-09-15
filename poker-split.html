@@ -2,8 +2,26 @@
 <html lang="zh-HK">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="Poker 分池">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#e74c3c">
+    <meta name="msapplication-navbutton-color" content="#e74c3c">
+    <meta name="msapplication-TileColor" content="#e74c3c">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="description" content="Poker 分池計算器 - 自動計算撲克遊戲結算">
+    
+    <!-- PWA Manifest -->
+    <link rel="manifest" href="data:application/json;base64,ewogICJuYW1lIjogIlBva2VyIOWIhuaxoOioiOeulOWZqCIsCiAgInNob3J0X25hbWUiOiAiUG9rZXLliIbmsaAiLAogICJkZXNjcmlwdGlvbiI6ICLoh6rli5XoqIjnrpfmkrLlhYvpgYrmiLLntZDnrpciLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y1ZjVmNSIsCiAgInRoZW1lX2NvbG9yIjogIiNlNzRjM2MiLAogICJvcmllbnRhdGlvbiI6ICJwb3J0cmFpdCIsCiAgImljb25zIjogWwogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgMTkyIDE5MiclM0UlM0NyZWN0IHdpZHRoPScxOTInIGhlaWdodD0nMTkyJyBmaWxsPSclMjNlNzRjM2MnIHJ4PScyMCcvJTNFJTNDdGV4dCB4PSc1MCUyNScgeT0nNTAlMjUnIGZvbnQtc2l6ZT0nODAnIGZpbGw9J3doaXRlJyB0ZXh0LWFuY2hvcj0nbWlkZGxlJyBkb21pbmFudC1iYXNlbGluZT0nbWlkZGxlJyBmb250LWZhbWlseT0nc2Fucy1zZXJpZiclM0UlRjAlOUYlOEUlQjAlM0MvdGV4dCUzRSUzQy9zdmclM0UiLAogICAgICAic2l6ZXMiOiAiMTkyeDE5MiIsCiAgICAgICJ0eXBlIjogImltYWdlL3N2Zyt4bWwiCiAgICB9LAogICAgewogICAgICAic3JjIjogImRhdGE6aW1hZ2Uvc3ZnK3htbCwlM0NzdmcgeG1sbnM9J2h0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnJyB2aWV3Qm94PScwIDAgNTEyIDUxMiclM0UlM0NyZWN0IHdpZHRoPSc1MTInIGhlaWdodD0nNTEyJyBmaWxsPSclMjNlNzRjM2MnIHJ4PSc1MCcvJTNFJTNDdGV4dCB4PSc1MCUyNScgeT0nNTAlMjUnIGZvbnQtc2l6ZT0nMjAwJyBmaWxsPSd3aGl0ZScgdGV4dC1hbmNob3I9J21pZGRsZScgZG9taW5hbnQtYmFzZWxpbmU9J21pZGRsZScgZm9udC1mYW1pbHk9J3NhbnMtc2VyaWYnJTNFJUYwJTlGJThFJUIwJTNDL3RleHQlM0UlM0Mvc3ZnJTNFIiwKICAgICAgInNpemVzIjogIjUxMng1MTIiLAogICAgICAidHlwZSI6ICJpbWFnZS9zdmcreG1sIgogICAgfQogIF0KfQ==">
+    
+    <!-- iOS Icon -->
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'%3E%3Crect width='180' height='180' fill='%23e74c3c' rx='20'/%3E%3Ctext x='50%25' y='50%25' font-size='80' fill='white' text-anchor='middle' dominant-baseline='middle' font-family='sans-serif'%3E🎰%3C/text%3E%3C/svg%3E">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%23e74c3c' rx='4'/%3E%3Ctext x='50%25' y='50%25' font-size='20' fill='white' text-anchor='middle' dominant-baseline='middle'%3E🎰%3C/text%3E%3C/svg%3E">
+    
     <title>Poker 分池計算器</title>
     <style>
         * {
@@ -18,6 +36,29 @@
             background: #f5f5f5;
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
+            overscroll-behavior: contain;
+        }
+        
+        /* 允許輸入框文字選擇 */
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+        
+        /* 防止 iOS 彈性滾動 */
+        html, body {
+            position: fixed;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* 主容器可滾動 */
+        .main-wrapper {
+            height: 100%;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            padding-bottom: env(safe-area-inset-bottom);
         }
         
         .header {
@@ -25,7 +66,7 @@
             padding: 12px 16px;
             display: flex;
             align-items: center;
-            justify-content: center;
+            justify-content: space-between;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             position: sticky;
             top: 0;
@@ -46,6 +87,19 @@
             border-radius: 4px;
             margin-left: 8px;
             font-size: 16px;
+        }
+        
+        .install-icon {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+            display: none;
+        }
+        
+        .install-icon.show {
+            display: block;
         }
         
         .container {
@@ -230,7 +284,6 @@
             font-size: 14px;
         }
         
-        /* 差額區塊樣式 */
         .difference-section {
             margin-top: 20px;
             padding-top: 20px;
@@ -342,7 +395,6 @@
             -webkit-appearance: none;
         }
         
-        /* 分享彈窗按鈕樣式 */
         .share-btn {
             flex: 1;
             padding: 14px;
@@ -372,6 +424,17 @@
         
         .copy-btn:active {
             background: #2980b9;
+        }
+        
+        @keyframes slideUp {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
         
         @media (max-width: 480px) {
@@ -424,64 +487,68 @@
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="logo">
-            POKER <span>分池師</span>
-        </div>
-    </div>
-    
-    <div class="container">
-        <div class="section">
-            <div class="section-title">遊戲設定</div>
-            <div class="info-row">
-                <span>買入額度：</span>
-                <input type="number" 
-                       id="buyInAmount" 
-                       value="1000" 
-                       pattern="[0-9]*"
-                       inputmode="numeric"
-                       onfocus="this.select()"
-                       style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; text-align: center;">
+    <div class="main-wrapper">
+        <div class="header">
+            <div class="logo">
+                POKER <span>分池師</span>
             </div>
+            <button id="installBtn" class="install-icon" onclick="triggerInstall()" title="安裝應用">
+                📲
+            </button>
         </div>
         
-        <div class="section">
-            <div class="section-title">新增玩家</div>
-            <div class="add-player">
-                <input type="text" id="playerName" placeholder="輸入玩家名稱">
-                <button class="btn" onclick="addPlayer()">新增</button>
-            </div>
-            
-            <table class="player-table">
-                <thead>
-                    <tr>
-                        <th>玩家</th>
-                        <th>買入</th>
-                        <th>餘額</th>
-                        <th>盈虧</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="playerList">
-                </tbody>
-            </table>
-            
-            <!-- 差額區塊 -->
-            <div class="difference-section">
-                <div class="difference-row">
-                    <span class="difference-label">差額</span>
-                    <span class="difference-info">⚠️ 計算分池需保持差額為零</span>
-                    <span id="totalDifference" class="difference-value">0</span>
+        <div class="container">
+            <div class="section">
+                <div class="section-title">遊戲設定</div>
+                <div class="info-row">
+                    <span>買入額度：</span>
+                    <input type="number" 
+                           id="buyInAmount" 
+                           value="1000" 
+                           pattern="[0-9]*"
+                           inputmode="numeric"
+                           onfocus="this.select()"
+                           style="width: 100px; padding: 8px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; text-align: center;">
                 </div>
             </div>
+            
+            <div class="section">
+                <div class="section-title">新增玩家</div>
+                <div class="add-player">
+                    <input type="text" id="playerName" placeholder="輸入玩家名稱">
+                    <button class="btn" onclick="addPlayer()">新增</button>
+                </div>
+                
+                <table class="player-table">
+                    <thead>
+                        <tr>
+                            <th>玩家</th>
+                            <th>買入</th>
+                            <th>餘額</th>
+                            <th>盈虧</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="playerList">
+                    </tbody>
+                </table>
+                
+                <div class="difference-section">
+                    <div class="difference-row">
+                        <span class="difference-label">差額</span>
+                        <span class="difference-info">⚠️ 計算分池需保持差額為零</span>
+                        <span id="totalDifference" class="difference-value">0</span>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="section" id="settlementSection" style="display: none;">
+                <div class="section-title">💰 結算明細</div>
+                <div id="settlementList"></div>
+            </div>
+            
+            <button class="calculate-btn" onclick="calculateSettlement()">計算結算 & 分享戰績</button>
         </div>
-        
-        <div class="section" id="settlementSection" style="display: none;">
-            <div class="section-title">💰 結算明細</div>
-            <div id="settlementList"></div>
-        </div>
-        
-        <button class="calculate-btn" onclick="calculateSettlement()">計算結算 & 分享戰績</button>
     </div>
     
     <!-- 戰績海報彈窗 -->
@@ -557,7 +624,7 @@
             });
             
             nameInput.value = '';
-            nameInput.focus(); // 自動聚焦以便連續輸入
+            nameInput.focus();
             updatePlayerList();
         }
         
@@ -571,7 +638,6 @@
                 return;
             }
             
-            // 檢查是否有重複名稱（排除自己）
             const duplicate = players.find((p, i) => i !== index && p.name === trimmedName);
             if (duplicate) {
                 alert('玩家名稱已存在');
@@ -638,13 +704,12 @@
             if (differenceElement) {
                 differenceElement.textContent = totalProfit === 0 ? '0' : (totalProfit > 0 ? `+${totalProfit}` : totalProfit);
                 
-                // 根據差額設定顏色
                 if (Math.abs(totalProfit) < 0.01) {
-                    differenceElement.style.color = '#333'; // 黑色 - 平衡
+                    differenceElement.style.color = '#333';
                 } else if (totalProfit > 0) {
-                    differenceElement.style.color = '#3498db'; // 藍色 - 正數
+                    differenceElement.style.color = '#3498db';
                 } else {
-                    differenceElement.style.color = '#e74c3c'; // 紅色 - 負數
+                    differenceElement.style.color = '#e74c3c';
                 }
             }
         }
@@ -678,7 +743,6 @@
                 return;
             }
             
-            // 計算盈虧
             const results = players.map(player => {
                 const totalBuyIn = player.buyIns * buyInAmount;
                 const profit = player.balance - totalBuyIn;
@@ -691,21 +755,16 @@
                 };
             });
             
-            // 檢查總和是否為零
             const totalSum = results.reduce((sum, r) => sum + r.profit, 0);
             if (Math.abs(totalSum) > 0.01) {
                 alert(`盈虧總和不為零！\n當前差額: ${totalSum}\n請調整玩家餘額使差額為零`);
                 return;
             }
             
-            // 按盈虧排序
             const sortedResults = [...results].sort((a, b) => b.profit - a.profit);
-            
-            // 分離贏家和輸家
             const winners = results.filter(r => r.profit > 0).sort((a, b) => b.profit - a.profit);
             const losers = results.filter(r => r.profit < 0).sort((a, b) => a.profit - b.profit);
             
-            // 計算結算明細
             const settlements = [];
             const winnersCopy = winners.map(w => ({...w}));
             
@@ -727,7 +786,6 @@
                 }
             }
             
-            // 儲存遊戲數據
             lastGameData = {
                 date: new Date().toLocaleDateString('zh-HK'),
                 time: new Date().toLocaleTimeString('zh-HK', { hour: '2-digit', minute: '2-digit' }),
@@ -737,7 +795,6 @@
                 totalPot: results.reduce((sum, r) => sum + r.totalBuyIn, 0)
             };
             
-            // 顯示結算明細
             const settlementSection = document.getElementById('settlementSection');
             const settlementList = document.getElementById('settlementList');
             
@@ -757,7 +814,6 @@
                 settlementSection.style.display = 'none';
             }
             
-            // 顯示分享彈窗
             showShareModal();
         }
         
@@ -768,7 +824,6 @@
             const modal = document.getElementById('shareModal');
             const content = document.getElementById('posterContent');
             
-            // 生成海報HTML
             const bigWinner = lastGameData.players[0];
             const bigLoser = lastGameData.players[lastGameData.players.length - 1];
             
@@ -859,28 +914,23 @@
             const canvas = document.getElementById('posterCanvas');
             const ctx = canvas.getContext('2d');
             
-            // 計算動態高度
             const baseHeight = 350;
             const playerHeight = lastGameData.players.length * 25;
             const settlementHeight = lastGameData.settlements.length > 0 ? (lastGameData.settlements.length * 20 + 50) : 0;
             const totalHeight = baseHeight + playerHeight + settlementHeight + 50;
             
-            // 設置畫布大小
             canvas.width = 400;
             canvas.height = totalHeight;
             
-            // 清空畫布
             ctx.fillStyle = 'white';
             ctx.fillRect(0, 0, canvas.width, canvas.height);
             
-            // 繪製漸層標題背景
             const gradient = ctx.createLinearGradient(0, 0, canvas.width, 120);
             gradient.addColorStop(0, '#667eea');
             gradient.addColorStop(1, '#764ba2');
             ctx.fillStyle = gradient;
             ctx.fillRect(0, 0, canvas.width, 120);
             
-            // 繪製標題
             ctx.fillStyle = 'white';
             ctx.font = 'bold 28px sans-serif';
             ctx.textAlign = 'center';
@@ -888,13 +938,11 @@
             ctx.font = '16px sans-serif';
             ctx.fillText(`${lastGameData.date} ${lastGameData.time}`, canvas.width / 2, 85);
             
-            // 繪製統計數據框
             ctx.fillStyle = '#f8f9fa';
             ctx.fillRect(20, 140, 110, 70);
             ctx.fillRect(145, 140, 110, 70);
             ctx.fillRect(270, 140, 110, 70);
             
-            // 繪製統計文字
             ctx.fillStyle = '#666';
             ctx.font = '12px sans-serif';
             ctx.textAlign = 'center';
@@ -908,7 +956,6 @@
             ctx.fillText(`$${lastGameData.buyInAmount}`, 200, 190);
             ctx.fillText(`${lastGameData.players.length}`, 325, 190);
             
-            // 繪製贏家/輸家亮點
             const bigWinner = lastGameData.players[0];
             const bigLoser = lastGameData.players[lastGameData.players.length - 1];
             
@@ -932,29 +979,24 @@
             ctx.fillText(bigLoser.name, 220, 270);
             ctx.fillText(`-$${Math.abs(bigLoser.profit)}`, 220, 285);
             
-            // 繪製排行榜
             ctx.fillStyle = '#333';
             ctx.font = 'bold 14px sans-serif';
             ctx.fillText('📊 戰績排行', 30, 320);
             
             let y = 345;
             lastGameData.players.forEach((player, index) => {
-                // 排名數字
                 ctx.font = 'bold 14px sans-serif';
                 ctx.fillStyle = index === 0 ? '#FFD700' : index === 1 ? '#C0C0C0' : index === 2 ? '#CD7F32' : '#999';
                 ctx.fillText(`${index + 1}.`, 30, y);
                 
-                // 玩家名字
                 ctx.fillStyle = '#333';
                 ctx.font = '14px sans-serif';
                 ctx.fillText(player.name, 55, y);
                 
-                // 買入次數
                 ctx.fillStyle = '#999';
                 ctx.font = '12px sans-serif';
                 ctx.fillText(`買${player.buyIns}次`, 200, y);
                 
-                // 盈虧
                 ctx.font = 'bold 14px sans-serif';
                 ctx.fillStyle = player.profit >= 0 ? '#27ae60' : '#e74c3c';
                 ctx.textAlign = 'right';
@@ -964,7 +1006,6 @@
                 y += 25;
             });
             
-            // 繪製結算明細（如果有）
             if (lastGameData.settlements.length > 0) {
                 y += 10;
                 const settlementBoxHeight = lastGameData.settlements.length * 20 + 30;
@@ -984,13 +1025,11 @@
                 y += 10;
             }
             
-            // 頁腳
             ctx.fillStyle = '#999';
             ctx.font = '11px sans-serif';
             ctx.textAlign = 'center';
             ctx.fillText('Powered by POKER 分池師', canvas.width / 2, canvas.height - 20);
             
-            // 下載圖片
             canvas.toBlob(function(blob) {
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
@@ -1030,7 +1069,6 @@
             text += `\n━━━━━━━━━━━━━━━\n`;
             text += `Powered by POKER 分池師`;
             
-            // 複製到剪貼簿
             if (navigator.clipboard) {
                 navigator.clipboard.writeText(text).then(() => {
                     alert('戰績已複製到剪貼簿！');
@@ -1072,7 +1110,243 @@
         // 頁面載入時初始化
         window.addEventListener('DOMContentLoaded', function() {
             initDefaultPlayers();
+            initPWA();
         });
+        
+        // PWA 功能
+        let deferredPrompt;
+        
+        function initPWA() {
+            // 註冊 Service Worker
+            if ('serviceWorker' in navigator) {
+                const swCode = `
+                    self.addEventListener('install', e => {
+                        e.waitUntil(
+                            caches.open('poker-v1').then(cache => {
+                                return cache.addAll(['/']);
+                            })
+                        );
+                    });
+                    
+                    self.addEventListener('fetch', e => {
+                        e.respondWith(
+                            caches.match(e.request).then(response => {
+                                return response || fetch(e.request);
+                            })
+                        );
+                    });
+                `;
+                
+                const swBlob = new Blob([swCode], { type: 'application/javascript' });
+                const swUrl = URL.createObjectURL(swBlob);
+                
+                navigator.serviceWorker.register(swUrl).catch(() => {
+                    console.log('Service Worker registration failed');
+                });
+            }
+            
+            // 監聽安裝提示事件
+            window.addEventListener('beforeinstallprompt', (e) => {
+                e.preventDefault();
+                deferredPrompt = e;
+                
+                const installBtn = document.getElementById('installBtn');
+                if (installBtn) {
+                    installBtn.classList.add('show');
+                }
+                
+                setTimeout(() => {
+                    showInstallPromotion();
+                }, 3000);
+            });
+            
+            // 監聽安裝成功事件
+            window.addEventListener('appinstalled', () => {
+                console.log('PWA was installed');
+                hideInstallPromotion();
+                
+                const installBtn = document.getElementById('installBtn');
+                if (installBtn) {
+                    installBtn.classList.remove('show');
+                }
+            });
+            
+            // 檢查是否在獨立模式運行
+            if (window.matchMedia('(display-mode: standalone)').matches) {
+                console.log('Running in standalone mode');
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS && !window.navigator.standalone) {
+                    const installBtn = document.getElementById('installBtn');
+                    if (installBtn) {
+                        installBtn.classList.add('show');
+                    }
+                }
+            }
+        }
+        
+        // 顯示安裝提示橫幅
+        function showInstallPromotion() {
+            if (window.matchMedia('(display-mode: standalone)').matches || 
+                localStorage.getItem('installPromptShown') === 'true') {
+                return;
+            }
+            
+            if (!deferredPrompt) {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    showIOSInstallGuide();
+                    return;
+                }
+            }
+            
+            const banner = document.createElement('div');
+            banner.id = 'installBanner';
+            banner.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                animation: slideUp 0.5s ease-out;
+            `;
+            
+            banner.innerHTML = `
+                <div style="flex: 1;">
+                    <div style="font-weight: bold; margin-bottom: 4px;">📱 安裝 Poker 分池師</div>
+                    <div style="font-size: 13px; opacity: 0.9;">添加到主屏幕，獲得更好體驗</div>
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button onclick="installPWA()" style="
+                        background: white;
+                        color: #667eea;
+                        border: none;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        font-weight: bold;
+                        cursor: pointer;
+                    ">安裝</button>
+                    <button onclick="dismissInstall()" style="
+                        background: transparent;
+                        color: white;
+                        border: 1px solid white;
+                        padding: 10px 20px;
+                        border-radius: 8px;
+                        cursor: pointer;
+                    ">稍後</button>
+                </div>
+            `;
+            
+            document.body.appendChild(banner);
+        }
+        
+        // iOS 安裝指引
+        function showIOSInstallGuide() {
+            const guide = document.createElement('div');
+            guide.id = 'iosGuide';
+            guide.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                color: white;
+                padding: 16px;
+                border-radius: 12px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                z-index: 1000;
+                animation: slideUp 0.5s ease-out;
+            `;
+            
+            guide.innerHTML = `
+                <div style="display: flex; justify-content: space-between; align-items: start;">
+                    <div style="flex: 1;">
+                        <div style="font-weight: bold; margin-bottom: 8px;">📱 安裝到主屏幕</div>
+                        <div style="font-size: 13px; line-height: 1.5;">
+                            1. 點擊瀏覽器底部的 <span style="font-size: 16px;">⬆️</span> 分享按鈕<br>
+                            2. 選擇「加到主畫面」<br>
+                            3. 點擊「新增」
+                        </div>
+                    </div>
+                    <button onclick="dismissIOSGuide()" style="
+                        background: white;
+                        color: #667eea;
+                        border: none;
+                        padding: 8px 16px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-size: 14px;
+                    ">知道了</button>
+                </div>
+            `;
+            
+            document.body.appendChild(guide);
+            
+            setTimeout(() => {
+                dismissIOSGuide();
+            }, 10000);
+        }
+        
+        // 隱藏安裝提示
+        function hideInstallPromotion() {
+            const banner = document.getElementById('installBanner');
+            if (banner) {
+                banner.remove();
+            }
+        }
+        
+        // 關閉 iOS 指引
+        function dismissIOSGuide() {
+            const guide = document.getElementById('iosGuide');
+            if (guide) {
+                guide.remove();
+            }
+            localStorage.setItem('installPromptShown', 'true');
+        }
+        
+        // 安裝 PWA
+        async function installPWA() {
+            if (!deferredPrompt) {
+                return;
+            }
+            
+            hideInstallPromotion();
+            deferredPrompt.prompt();
+            
+            const { outcome } = await deferredPrompt.userChoice;
+            console.log(`User response to the install prompt: ${outcome}`);
+            
+            deferredPrompt = null;
+            localStorage.setItem('installPromptShown', 'true');
+        }
+        
+        // 關閉安裝提示
+        function dismissInstall() {
+            hideInstallPromotion();
+            localStorage.setItem('installPromptShown', 'true');
+        }
+        
+        // 手動觸發安裝
+        function triggerInstall() {
+            if (deferredPrompt) {
+                installPWA();
+            } else {
+                const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+                if (isIOS) {
+                    showIOSInstallGuide();
+                } else {
+                    alert('請使用 Chrome、Edge 或其他支援 PWA 的瀏覽器來安裝此應用');
+                }
+            }
+        }
     </script>
 </body>
 </html>
