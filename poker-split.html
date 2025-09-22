@@ -235,7 +235,7 @@
         }
         
         .buy-control span {
-            min-width: 20px;
+            min-width: 35px;
             text-align: center;
             font-size: 14px;
         }
@@ -467,6 +467,11 @@
                 width: 28px;
                 height: 28px;
                 font-size: 16px;
+            }
+            
+            .buy-control span {
+                min-width: 30px;
+                font-size: 13px;
             }
             
             .difference-info {
@@ -766,6 +771,15 @@
             players[index].name = trimmedName;
         }
         
+        // 格式化買入次數顯示
+        function formatBuyIns(buyIns) {
+            if (buyIns % 1 === 0) {
+                return buyIns.toString();
+            } else {
+                return buyIns.toFixed(1);
+            }
+        }
+        
         // 更新玩家列表顯示
         function updatePlayerList() {
             const tbody = document.getElementById('playerList');
@@ -791,9 +805,9 @@
                     </td>
                     <td>
                         <div class="buy-control">
-                            <button class="buy-btn" onclick="changeBuyIn(${index}, -1)">−</button>
-                            <span>+${player.buyIns}</span>
-                            <button class="buy-btn" onclick="changeBuyIn(${index}, 1)">+</button>
+                            <button class="buy-btn" onclick="changeBuyIn(${index}, -0.5)">−</button>
+                            <span>+${formatBuyIns(player.buyIns)}</span>
+                            <button class="buy-btn" onclick="changeBuyIn(${index}, 0.5)">+</button>
                         </div>
                     </td>
                     <td>
@@ -832,10 +846,12 @@
             }
         }
         
-        // 更改買入次數
+        // 更改買入次數 - 修改為 0.5 增減
         function changeBuyIn(index, change) {
-            if (players[index].buyIns + change >= 1) {
-                players[index].buyIns += change;
+            const newBuyIns = players[index].buyIns + change;
+            // 最小買入次數為 0.5
+            if (newBuyIns >= 0.5) {
+                players[index].buyIns = Math.round(newBuyIns * 2) / 2; // 確保是 0.5 的倍數
                 updatePlayerList();
             }
         }
@@ -993,7 +1009,7 @@
                                     <span style="margin-left: 10px; font-weight: 500;">${player.name}</span>
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 15px;">
-                                    <span style="font-size: 12px; color: #999;">買${player.buyIns}次</span>
+                                    <span style="font-size: 12px; color: #999;">買${formatBuyIns(player.buyIns)}次</span>
                                     <span style="font-weight: bold; color: ${player.profit >= 0 ? '#27ae60' : '#e74c3c'};">
                                         ${player.profit >= 0 ? '+' : ''}$${Math.abs(player.profit)}
                                     </span>
@@ -1131,7 +1147,7 @@
                 
                 ctx.fillStyle = '#999';
                 ctx.font = `${12 * scale}px sans-serif`;
-                ctx.fillText(`買${player.buyIns}次`, 200 * scale, y);
+                ctx.fillText(`買${formatBuyIns(player.buyIns)}次`, 200 * scale, y);
                 
                 ctx.font = `bold ${14 * scale}px sans-serif`;
                 ctx.fillStyle = player.profit >= 0 ? '#27ae60' : '#e74c3c';
@@ -1230,7 +1246,7 @@
             lastGameData.players.forEach((player, index) => {
                 const medal = index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `${index + 1}.`;
                 const profit = player.profit >= 0 ? `+$${player.profit}` : `-$${Math.abs(player.profit)}`;
-                text += `${medal} ${player.name}: ${profit} (買${player.buyIns}次)\n`;
+                text += `${medal} ${player.name}: ${profit} (買${formatBuyIns(player.buyIns)}次)\n`;
             });
             
             if (lastGameData.settlements.length > 0) {
