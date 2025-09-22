@@ -56,7 +56,7 @@
             height: 100%;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
-            padding-bottom: env(safe-area-inset-bottom);
+            padding-bottom: calc(80px + env(safe-area-inset-bottom));
         }
         
         .header {
@@ -103,6 +103,7 @@
         .container {
             max-width: 100%;
             padding: 12px;
+            padding-bottom: 40px;
         }
         
         .section {
@@ -370,9 +371,8 @@
             font-weight: bold;
             cursor: pointer;
             margin-top: 16px;
+            margin-bottom: 20px;
             touch-action: manipulation;
-            position: sticky;
-            bottom: 12px;
             box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
         }
         
@@ -450,6 +450,11 @@
             .player-name-input {
                 min-width: 70px;
                 font-size: 14px;
+            }
+            
+            /* 為手機底部導航欄預留額外空間 */
+            .container {
+                padding-bottom: 80px;
             }
         }
         
